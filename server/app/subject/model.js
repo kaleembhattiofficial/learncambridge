@@ -102,27 +102,9 @@ const subjectSchema = new Schema({
   },
 
   // ...
-  questions: {
+  topics: {
     type: [Schema.Types.ObjectId],
-    ref: 'Question',
-    default: [],
-  },
-
-  resources: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Resource',
-    default: [],
-  },
-
-  qna: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Qna',
-    default: [],
-  },
-
-  notes: {
-    type: [Schema.Types.ObjectId],
-    ref: 'note',
+    ref: 'Topics',
     default: [],
   },
 });

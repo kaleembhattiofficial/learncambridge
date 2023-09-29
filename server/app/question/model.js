@@ -28,7 +28,7 @@ const questionSchema = new Schema({
   // Manual
   title: {
     type: String,
-    required: [true, "{PATH} is required"],
+    required: [true, '{PATH} is required'],
   },
   // Excluding title
   body: {
@@ -36,47 +36,43 @@ const questionSchema = new Schema({
       {
         style: {
           type: String,
-          required: [true, "{PATH} is required"],
+          required: [true, '{PATH} is required'],
           enum: {
-            values: ["Subheading", "Paragraph"],
-            message:
-              "Enum validator failed for path `{PATH}` with value `{VALUE}",
+            values: ['Subheading', 'Paragraph'],
+            message: 'Enum validator failed for path `{PATH}` with value `{VALUE}',
           },
         },
-        content: { type: String, required: [true, "{PATH} is required"] },
+        content: { type: String, required: [true, '{PATH} is required'] },
       },
     ],
   },
 
   topic: {
-    type: [mongoose.ObjectId],
-    required: [true, "{PATH} is required"],
-  },
-
-  subject: {
-    type: mongoose.ObjectId,
-    required: [true, "{PATH} is required"],
+    type: Schema.Types.ObjectId,
+    ref: 'Topic',
+    required: [true, '{PATH} is required'],
   },
 
   difficulty: {
     type: Number,
     max: 10,
     min: 1,
-    required: [true, "{PATH} is required"],
+    required: [true, '{PATH} is required'],
   },
 
   author: {
-    type: mongoose.ObjectId,
-    required: [true, "{PATH} is required"],
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, '{PATH} is required'],
   },
 
   status: {
     type: String,
     enum: {
-      values: ["Good", "Pending", "Bad", "Depricated"],
-      message: "Enum validator failed for path `{PATH}` with value `{VALUE}",
+      values: ['Good', 'Pending', 'Bad', 'Depricated'],
+      message: 'Enum validator failed for path `{PATH}` with value `{VALUE}',
     },
-    default: "Good",
+    default: 'Good',
   },
 
   interactive: {
