@@ -71,8 +71,8 @@ module.exports.noId = {
 
 module.exports.noPermissions = {
   isLocal: true,
-  message: "You dont have the authority to perform this action",
-  more: [],
+  message: 'You dont have the authority to perform this action',
+  more: ['The document may have been removed or relocated'],
   statusCode: 403,
 };
 

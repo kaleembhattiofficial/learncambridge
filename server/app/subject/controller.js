@@ -91,6 +91,7 @@ module.exports.patchById = async (req, res, next) => {
     const updatedSubject = {};
 
     // Fix this later
+    // All Edit Options
     if (req.body.publicStatus)
       updatedSubject.publicStatus = req.body.publicStatus;
 
@@ -114,7 +115,7 @@ module.exports.patchById = async (req, res, next) => {
       for (const key of Object.keys(updatedSubject)) {
         console.log(key, updatedSubject[key]);
 
-        // Converting into upper case for security
+        // Converting into upper case for ease
         if (
           subject[`${key}`].toUpperCase() === updatedSubject[key].toUpperCase()
         ) {
@@ -139,7 +140,7 @@ module.exports.patchById = async (req, res, next) => {
     )
       .then(() => {
         res.status(200).json({
-          status: "success",
+          status: 'success',
           message: `${subject.cambridgeCombination} has successfully been edited with the values that you provided`,
           data: updatedSubject,
         });

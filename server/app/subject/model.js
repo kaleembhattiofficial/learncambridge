@@ -27,111 +27,102 @@ const subjectSchema = new Schema({
 
   cambridgeCombination: {
     type: String,
-    unique: [true, "{PATH} should be unique"],
-    required: [true, "{PATH} is required"],
+    unique: [true, '{PATH} should be unique'],
+    required: [true, '{PATH} is required'],
   },
 
   publicStatus: {
     type: String,
     enum: {
-      values: ["Show", "Hide", "Deleted"],
-      message: "Enum validator failed for `{PATH}` with value `{VALUE}",
+      values: ['Show', 'Hide', 'Deleted'],
+      message: 'Enum validator failed for `{PATH}` with value `{VALUE}',
     },
-    default: "Show",
+    default: 'Show',
   },
 
   // Manual
   cambridgeLevel: {
     type: String,
     enum: {
-      values: ["O", "A"],
-      message: "Enum validator failed for `{PATH}` with value `{VALUE}",
+      values: ['O', 'A'],
+      message: 'Enum validator failed for `{PATH}` with value `{VALUE}',
     },
-    required: [true, "{PATH} is required"],
+    required: [true, '{PATH} is required'],
   },
 
   cambridgeSubject: {
     type: String,
     enum: {
-      values: ["MATH", "ENGLISH", "IT", "ICT"],
-      message: "Enum validator failed for `{PATH}` with value `{VALUE}",
+      values: ['MATH', 'ENGLISH', 'IT', 'ICT'],
+      message: 'Enum validator failed for `{PATH}` with value `{VALUE}',
     },
-    required: [true, "{PATH} is required"],
+    required: [true, '{PATH} is required'],
   },
 
   difficulty: {
     type: String,
     enum: {
-      values: ["Easy", "Medium", "Difficult", "Impossible"],
-      message: "Enum validator failed for `{PATH}` with value `{VALUE}",
+      values: ['Easy', 'Medium', 'Difficult', 'Impossible'],
+      message: 'Enum validator failed for `{PATH}` with value `{VALUE}',
     },
-    required: [true, "{PATH} is required"],
+    required: [true, '{PATH} is required'],
   },
 
   thumbnail: {
     type: String,
-    minlength: [8, "{PATH} filename must be greater than 8 characters"],
-    maxlength: [128, "{PATH} filename must be less than 128 characters"],
-    required: [true, "{PATH} is required"],
+    minlength: [8, '{PATH} filename must be greater than 8 characters'],
+    maxlength: [128, '{PATH} filename must be less than 128 characters'],
+    required: [true, '{PATH} is required'],
   },
 
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User",
-    required: [true, "{PATH} is required"],
+    ref: 'User',
+    required: [true, '{PATH} is required'],
   },
 
   contributors: {
     type: [Schema.Types.ObjectId],
-    ref: "User",
-    required: [true, "{PATH} is required"],
+    ref: 'User',
+    required: [true, '{PATH} is required'],
   },
 
   rating: {
     type: Number,
-    min: [0, "{PATH} must be greater than 0"],
-    max: [5, "{PATH} must be lesser than 5"],
+    min: [0, '{PATH} must be greater than 0'],
+    max: [5, '{PATH} must be lesser than 5'],
     default: 0,
-  },
-
-  status: {
-    type: String,
-    enum: {
-      values: ["Active", "Paused", "Depricated"],
-      message: "Enum validator failed for `{PATH}` with value `{VALUE}",
-    },
-    default: "Paused",
   },
 
   contentCompletion: {
     type: Number,
-    min: [0, "{PATH} must be greater than 0"],
-    max: [100, "{PATH} must be lesser than 100"],
+    min: [0, '{PATH} must be greater than 0'],
+    max: [100, '{PATH} must be lesser than 100'],
     default: 0,
   },
 
   // ...
   questions: {
     type: [Schema.Types.ObjectId],
-    ref: "Question",
+    ref: 'Question',
     default: [],
   },
 
   resources: {
     type: [Schema.Types.ObjectId],
-    ref: "Resource",
+    ref: 'Resource',
     default: [],
   },
 
   qna: {
     type: [Schema.Types.ObjectId],
-    ref: "Qna",
+    ref: 'Qna',
     default: [],
   },
 
   notes: {
     type: [Schema.Types.ObjectId],
-    ref: "note",
+    ref: 'note',
     default: [],
   },
 });
