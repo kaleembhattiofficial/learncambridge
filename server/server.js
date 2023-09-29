@@ -2,6 +2,8 @@
 // Global
 ////////////////////
 
+console.log("hio")
+
 const mongoose = require("mongoose");
 require("dotenv").config();
 
