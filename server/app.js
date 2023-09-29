@@ -9,7 +9,7 @@ const express = require("express");
 ////////////////////
 const questionRouter = require("./app/question/router");
 const subjectRouter = require("./app/subject/router");
-const topicRouter = require('./app/topic');
+const topicRouter = require('./app/topic/router');
 const userRouter = require('./app/user/router');
 
 const { globalErrorHandler } = require('./app/utils/globalErrorHandler');
