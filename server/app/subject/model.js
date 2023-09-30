@@ -119,13 +119,18 @@ const subjectSchema = new Schema({
 });
 
 subjectSchema.pre('save', function () {
+  // Last Edit
   this.lastEdit = Date.now();
+
+  // Thumnail location
+  const thumbnailLocal = this.thumbnail.split('/');
+
+  this.thumbnail = thumbnailLocal[thumbnailLocal.length - 1];
 
   this.thumbnail = `${this.cambridgeLevel.toLowerCase()}/${this.cambridgeSubject.toLowerCase()}/${this.thumbnail.toLowerCase()}`;
 
+  // Cambridge combination
   this.cambridgeCombination = `${this.cambridgeLevel.toUpperCase()}_${this.cambridgeSubject.toUpperCase()}`;
-
-  console.log(`${this.cambridgeLevel.toUpperCase()}_${this.cambridgeSubject.toUpperCase()}`);
 });
 
 const Subject = mongoose.model("Subject", subjectSchema);
