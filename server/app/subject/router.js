@@ -30,9 +30,7 @@ router.route("/createDev").get(authenticateToken, controller.createDev);
 router
   .route("/all")
   .get(async (req, res) => {
-    const allSubjects = await Model.find({ publicStatus: "Show" }).select(
-      req.select
-    );
+    const allSubjects = await Model.find({ status: 'Good' }).select(req.select);
     res.status(200).json({
       status: "success",
       length: allSubjects.length,
