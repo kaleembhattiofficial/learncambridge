@@ -84,7 +84,56 @@ module.exports.postNew = async (req, res, next) => {
 };
 
 // PATCH
-module.exports.patchById = (req, res, next) => {};
+module.exports.patchById = async (req, res, next) => {
+  console.log(1);
+  try {
+    // Initialization
+    const params = req.params;
+    const updatedTopic = {};
+
+    // DB
+    const topic = await Model.findOne({ _id: params.id, author: req.user });
+
+    // Error handling
+    if (!topic) return next(localErrorObj.noPermissions);
+
+    if (req.body.title) updatedTopic.title = req.body.title;
+    if (req.body.topicNumber) updatedTopic.topicNumber = req.body.topicNumber;
+    if (req.body.status) updatedTopic.status = req.body.status;
+
+    // Checking if the updated subject contains the same values as the original subject
+    if (Object.keys(updatedTopic).length > 0) {
+      // Loop1
+      for (const key of Object.keys(updatedTopic)) {
+        // Converting into upper case for ease
+        if (topic[`${key}`].toUpperCase() === updatedTopic[key].toUpperCase()) {
+          // Removing the keys with the same values
+          delete updatedTopic[key];
+        }
+      }
+    }
+
+    // Checking if the updated object has any values
+    if (Object.keys(updatedTopic).length === 0) return next(localErrorObj.noChangesMade);
+
+    // Updating DB
+    await Model.updateOne({ _id: params.id, author: req.user }, updatedTopic, {
+      runValidators: true,
+    })
+      .then(() => {
+        // Success
+        res.status(200).json({
+          status: 'success',
+          message: `${topic.cambridgeCombination} has successfully been edited with the values that you provided`,
+          data: updatedTopic,
+        });
+      })
+      // Error handling
+      .catch((err) => next(err));
+  } catch (error) {
+    next(error);
+  }
+};
 
 // DELETE
 module.exports.deleteById = (req, res, next) => {};
