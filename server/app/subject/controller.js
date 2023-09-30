@@ -19,7 +19,7 @@ module.exports.getById = async (req, res, next) => {
     const params = req.params;
     const subject = await Model.findOne({
       _id: params.id,
-      publicStatus: "Show",
+      status: 'Good',
     });
     // .populate("author", "username profile")
     // .populate("contributors", "username profile");
