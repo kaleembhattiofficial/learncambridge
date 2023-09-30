@@ -20,11 +20,7 @@ const router = express.Router();
 
 // Routes
 
-router
-  .route(':id')
-  .get(controller.getById)
-  .patch(authenticateToken, controller.patchById)
-  .delete(authenticateToken, controller.deleteById);
+
 
 router.route('/search/:query').get(controller.search);
 
@@ -37,5 +33,11 @@ router.route('/all').get(async (req, res) => {
   const allTopics = await Model.find({});
   res.status(200).json({ allTopics });
 });
+
+router
+  .route('/:id')
+  .get(controller.getById)
+  .patch(authenticateToken, controller.patchById)
+  .delete(authenticateToken, controller.deleteById);
 
 module.exports = router;
