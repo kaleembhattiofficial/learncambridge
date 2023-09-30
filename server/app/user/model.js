@@ -59,7 +59,7 @@ const userSchema = new Schema({
     type: String,
     minlength: [8, '{PATH} (filename) must be greater than 8 characters'],
     maxlength: [128, '{PATH} (filename) must be less than 128 characters'],
-    default: 'default',
+    default: 'defaultProfile',
   },
 
   profileExtension: {
