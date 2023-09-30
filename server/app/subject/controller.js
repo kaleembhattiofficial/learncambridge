@@ -25,7 +25,8 @@ module.exports.getById = async (req, res, next) => {
       status: 'Good',
     })
       .populate('author', 'username profile')
-      .populate('contributors', 'username profile');
+      .populate('contributors', 'username profile')
+      .populate('topics');
 
     // Error handling
     if (!subject) return next(localErrorObj.noId);
@@ -114,8 +115,6 @@ module.exports.patchById = async (req, res, next) => {
     if (Object.keys(updatedSubject).length > 0) {
       // Loop1
       for (const key of Object.keys(updatedSubject)) {
-        console.log(key, updatedSubject[key]);
-
         // Converting into upper case for ease
         if (subject[`${key}`].toUpperCase() === updatedSubject[key].toUpperCase()) {
           // Removing the keys with the same values
