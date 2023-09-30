@@ -93,9 +93,57 @@ module.exports.login = async (req, res, next) => {
 };
 
 // PATCH
-module.exports.edit = (req, res, next) => {
-  console.log(req.user);
-  res.end("EDIT");
+module.exports.edit = async (req, res, next) => {
+  try {
+    // Initialization
+    const params = req.params;
+    const updatedUser = {};
+
+    // DB
+    const user = await Model.findOne({ _id: req.user });
+
+    // Error handling
+    if (!user) return next(localErrorObj.noPermissions);
+
+    // All edit options available
+    if (req.body.biography) updatedUser.biography = req.body.biography;
+    if (req.body.emailSubscription) updatedUser.emailSubscription = req.body.emailSubscription;
+    if (req.body.status) updatedUser.status = req.body.status;
+    if (req.body.profile) updatedUser.profile = req.body.profile;
+    if (req.body.profileExtension) updatedUser.profileExtension = req.body.profileExtension;
+
+    // Checking if the updated subject contains the same values as the original subject
+    if (Object.keys(updatedUser).length > 0) {
+      // Loop1
+      for (const key of Object.keys(updatedUser)) {
+        // Converting into upper case for ease
+        if (String(user[key]).toUpperCase() === String(updatedUser[key]).toUpperCase()) {
+          // Removing the keys with the same values
+          delete updatedUser[key];
+        }
+      }
+    }
+
+    // Checking if the updated object has any values
+    if (Object.keys(updatedUser).length === 0) return next(localErrorObj.noChangesMade);
+
+    // Updating DB
+    await Model.updateOne({ _id: req.user }, updatedUser, {
+      runValidators: true,
+    })
+      .then(() => {
+        // Success
+        res.status(200).json({
+          status: 'success',
+          message: `${user.username} has successfully been edited with the values that you provided`,
+          data: updatedUser,
+        });
+      })
+      // Error handling
+      .catch((err) => next(err));
+  } catch (error) {
+    next(error);
+  }
 };
 
 // DEVELOPMENT
