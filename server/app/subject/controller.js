@@ -101,13 +101,9 @@ module.exports.patchById = async (req, res, next) => {
 
     // All edit options available
     if (req.body.contentCompletion) updatedSubject.contentCompletion = req.body.contentCompletion;
-
     if (req.body.status) updatedSubject.status = req.body.status;
-
     if (req.body.difficulty) updatedSubject.difficulty = req.body.difficulty;
-
     if (req.body.thumbnail) updatedSubject.thumbnail = req.body.thumbnail;
-
     if (req.body.thumbnailExtention)
       updatedSubject.thumbnailExtention = req.body.thumbnailExtention;
 
@@ -116,7 +112,7 @@ module.exports.patchById = async (req, res, next) => {
       // Loop1
       for (const key of Object.keys(updatedSubject)) {
         // Converting into upper case for ease
-        if (subject[`${key}`].toUpperCase() === updatedSubject[key].toUpperCase()) {
+        if (String(subject[key]).toUpperCase() === String(updatedSubject[key]).toUpperCase()) {
           // Removing the keys with the same values
           delete updatedSubject[key];
         }
