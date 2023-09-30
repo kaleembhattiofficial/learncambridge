@@ -43,7 +43,13 @@ const topicSchema = new Schema({
       values: ['Good', 'Pending', 'Bad', 'Depricated'],
       message: 'Enum validator failed for path `{PATH}` with value `{VALUE}',
     },
-    default: 'Good',
+    default: 'Pending',
+  },
+
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, '{PATH} is required'],
   },
 
   //...

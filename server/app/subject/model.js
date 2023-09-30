@@ -31,13 +31,13 @@ const subjectSchema = new Schema({
     required: [true, '{PATH} is required'],
   },
 
-  publicStatus: {
+  status: {
     type: String,
     enum: {
-      values: ['Show', 'Hide', 'Deleted'],
-      message: 'Enum validator failed for `{PATH}` with value `{VALUE}',
+      values: ['Good', 'Pending', 'Bad', 'Depricated'],
+      message: 'Enum validator failed for path `{PATH}` with value `{VALUE}',
     },
-    default: 'Show',
+    default: 'Pending',
   },
 
   // Manual
