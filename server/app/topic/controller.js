@@ -97,6 +97,7 @@ module.exports.patchById = async (req, res, next) => {
     // Error handling
     if (!topic) return next(localErrorObj.noPermissions);
 
+    // All edit options available
     if (req.body.title) updatedTopic.title = req.body.title;
     if (req.body.topicNumber) updatedTopic.topicNumber = req.body.topicNumber;
     if (req.body.status) updatedTopic.status = req.body.status;
