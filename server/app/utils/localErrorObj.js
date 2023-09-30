@@ -82,3 +82,18 @@ module.exports.noChangesMade = {
   more: ["You edited document and the original document are exactly the same"],
   statusCode: 200,
 };
+
+
+module.exports.noSubject = {
+  isLocal: true,
+  message: 'The Subject which you tried to make changes to does no longer exists',
+  more: ['It may have been deleted or never have existed at all'],
+  statusCode: 200,
+};
+
+module.exports.topicRepetition = {
+  isLocal: true,
+  message: 'The topic which you want to create already exists. Try editing it first',
+  more: [],
+  statusCode: 200,
+};
