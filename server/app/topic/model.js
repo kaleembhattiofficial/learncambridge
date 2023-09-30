@@ -30,6 +30,16 @@ const topicSchema = new Schema({
     type: String,
     required: [true, '{PATH} is required'],
   },
+
+  topicNumber: {
+    type: Number,
+    enum: {
+      values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 16, 17, 18, 19, 20],
+      message: 'Enum validator failed for path `{PATH}` with value `{VALUE}',
+    },
+    required: [true, '{PATH} is required'],
+  },
+
   // Excluding title
   subject: {
     type: Schema.Types.ObjectId,
@@ -78,6 +88,10 @@ const topicSchema = new Schema({
   },
 });
 
-const Topic = mongoose.model('Topic', topicSchema);
+topicSchema.pre('save', function () {
+  this.title = this.title.toUpperCase();
+});
+
+const Topic = mongoose.model('Topics', topicSchema);
 
 module.exports = Topic;
