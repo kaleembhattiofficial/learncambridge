@@ -89,6 +89,10 @@ const topicSchema = new Schema({
 });
 
 topicSchema.pre('save', function () {
+  // Last edited
+  this.lastEditedAt = Date.now();
+
+  // Title
   this.title = this.title.toUpperCase();
 });
 
