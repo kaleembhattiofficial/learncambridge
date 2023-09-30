@@ -85,7 +85,6 @@ module.exports.postNew = async (req, res, next) => {
 
 // PATCH
 module.exports.patchById = async (req, res, next) => {
-  console.log(1);
   try {
     // Initialization
     const params = req.params;
