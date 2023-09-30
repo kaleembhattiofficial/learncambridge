@@ -99,19 +99,16 @@ module.exports.patchById = async (req, res, next) => {
     if (!subject) return next(localErrorObj.noPermissions);
 
     // All edit options available
-    if (req.body.publicStatus) updatedSubject.publicStatus = req.body.publicStatus;
+    if (req.body.contentCompletion) updatedSubject.contentCompletion = req.body.contentCompletion;
+
+    if (req.body.status) updatedSubject.status = req.body.status;
 
     if (req.body.difficulty) updatedSubject.difficulty = req.body.difficulty;
 
     if (req.body.thumbnail) updatedSubject.thumbnail = req.body.thumbnail;
 
-    if (req.body.contributors) updatedSubject.contributors = req.body.contributors;
-
-    if (req.body.status) updatedSubject.status = req.body.status;
-
-    if (req.body.contentCompletion) updatedSubject.contentCompletion = req.body.contentCompletion;
-
-    if (req.body.status) updatedSubject.status = req.body.status;
+    if (req.body.thumbnailExtention)
+      updatedSubject.thumbnailExtention = req.body.thumbnailExtention;
 
     // Checking if the updated subject contains the same values as the original subject
     if (Object.keys(updatedSubject).length > 0) {
