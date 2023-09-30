@@ -16,23 +16,29 @@ const localErrorObj = require("./../utils/localErrorObj");
 // GET
 module.exports.getById = async (req, res, next) => {
   try {
+    // Initialization
     const params = req.params;
+
+    // DB
     const subject = await Model.findOne({
       _id: params.id,
       status: 'Good',
-    });
-    // .populate("author", "username profile")
-    // .populate("contributors", "username profile");
+    })
+      .populate('author', 'username profile')
+      .populate('contributors', 'username profile');
 
+    // Error handling
     if (!subject) return next(localErrorObj.noId);
 
+    // Success
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: subject,
       more: [],
     });
     next();
   } catch (error) {
+    // Error handling
     next(error);
   }
 };
@@ -44,37 +50,37 @@ module.exports.postNew = async (req, res, next) => {
   try {
     // Initialization
     const subject = {
-      cambridgeLevel: req.body.cambridgeLevel.toUpperCase() || "",
-      cambridgeSubject: req.body.cambridgeSubject.toUpperCase() || "",
-      cambridgeCombination: "",
-      difficulty: req.body.difficulty || "",
-      thumbnail: req.body.thumbnail || "",
+      cambridgeLevel: req.body.cambridgeLevel.toUpperCase() || '',
+      cambridgeSubject: req.body.cambridgeSubject.toUpperCase() || '',
+      difficulty: req.body.difficulty || '',
+      thumbnail: req.body.thumbnail || '',
       author: req.user,
-    };
 
-    // Custom changes (due to object limitation in js)
-    subject.cambridgeCombination = `${subject.cambridgeLevel}_${subject.cambridgeSubject}`;
+      // Will be changed in the Schema
+      cambridgeCombination: 'ANYTHING',
+    };
 
     // New
     const newSubject = new Model(subject);
 
-    // Saving
+    // DB
     newSubject
       .save()
       .then((data) => {
         // Success
         res.status(200).json({
-          status: "success",
+          status: 'success',
           message: `Created new subject: ${data.cambridgeLevel}_${data.cambridgeSubject}`,
           more: data,
         });
       })
       .catch((err) => {
-        // Error
+        // Error handling
         err.statusCode = 401;
         return next(err);
       });
   } catch (error) {
+    // Error handling
     next(error);
   }
 };
@@ -82,30 +88,28 @@ module.exports.postNew = async (req, res, next) => {
 // PATCH
 module.exports.patchById = async (req, res, next) => {
   try {
-    const params = req.params;
-
-    const subject = await Model.findOne({ _id: params.id, author: req.user });
-
-    if (!subject) return next(localErrorObj.noPermissions);
     // Initialization
+    const params = req.params;
     const updatedSubject = {};
 
-    // Fix this later
-    // All Edit Options
-    if (req.body.publicStatus)
-      updatedSubject.publicStatus = req.body.publicStatus;
+    // DB
+    const subject = await Model.findOne({ _id: params.id, author: req.user });
+
+    // Error handling
+    if (!subject) return next(localErrorObj.noPermissions);
+
+    // All edit options available
+    if (req.body.publicStatus) updatedSubject.publicStatus = req.body.publicStatus;
 
     if (req.body.difficulty) updatedSubject.difficulty = req.body.difficulty;
 
     if (req.body.thumbnail) updatedSubject.thumbnail = req.body.thumbnail;
 
-    if (req.body.contributors)
-      updatedSubject.contributors = req.body.contributors;
+    if (req.body.contributors) updatedSubject.contributors = req.body.contributors;
 
     if (req.body.status) updatedSubject.status = req.body.status;
 
-    if (req.body.contentCompletion)
-      updatedSubject.contentCompletion = req.body.contentCompletion;
+    if (req.body.contentCompletion) updatedSubject.contentCompletion = req.body.contentCompletion;
 
     if (req.body.status) updatedSubject.status = req.body.status;
 
@@ -116,9 +120,7 @@ module.exports.patchById = async (req, res, next) => {
         console.log(key, updatedSubject[key]);
 
         // Converting into upper case for ease
-        if (
-          subject[`${key}`].toUpperCase() === updatedSubject[key].toUpperCase()
-        ) {
+        if (subject[`${key}`].toUpperCase() === updatedSubject[key].toUpperCase()) {
           // Removing the keys with the same values
           delete updatedSubject[key];
         }
@@ -126,29 +128,24 @@ module.exports.patchById = async (req, res, next) => {
     }
 
     // Checking if the updated object has any values
-    if (Object.keys(updatedSubject).length === 0)
-      return next(localErrorObj.noChangesMade);
+    if (Object.keys(updatedSubject).length === 0) return next(localErrorObj.noChangesMade);
 
-    // Updating
-
-    await Model.updateOne(
-      { _id: params.id, author: req.user },
-      updatedSubject,
-      {
-        runValidators: true,
-      }
-    )
+    // Updating DB
+    await Model.updateOne({ _id: params.id, author: req.user }, updatedSubject, {
+      runValidators: true,
+    })
       .then(() => {
+        // Success
         res.status(200).json({
           status: 'success',
           message: `${subject.cambridgeCombination} has successfully been edited with the values that you provided`,
           data: updatedSubject,
         });
       })
+      // Error handling
       .catch((err) => next(err));
-
-    // Change this if you find a better method
   } catch (error) {
+    // Error handling
     next(error);
   }
 };
@@ -156,25 +153,32 @@ module.exports.patchById = async (req, res, next) => {
 // DELETE
 module.exports.deleteById = async (req, res, next) => {
   try {
+    // Initialization
     const params = req.params;
 
+    // DB
     const subject = await Model.findOne({ _id: params.id, author: req.user });
 
+    // Error handling
     if (!subject) return next(localErrorObj.noPermissions);
 
+    // DB
     await Model.deleteOne({ _id: params.id, author: req.user })
       .then(() => {
+        // Success
         res.status(204).json({
-          status: "success",
-          message: "Removed your subject",
+          status: 'success',
+          message: 'Removed your subject',
           more: [
-            "This document will no longer exist",
-            "Everything else still exists, like questions, qna, etc.",
+            'This document will no longer exist',
+            'Everything else still exists, like questions, qna, etc.',
           ],
         });
       })
+      // Error handling
       .catch((err) => next(err));
   } catch (error) {
+    // Error handling
     next(error);
   }
 };
