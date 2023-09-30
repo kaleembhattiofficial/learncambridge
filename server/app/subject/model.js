@@ -70,9 +70,9 @@ const subjectSchema = new Schema({
 
   thumbnail: {
     type: String,
-    minlength: [8, '{PATH} filename must be greater than 8 characters'],
-    maxlength: [128, '{PATH} filename must be less than 128 characters'],
-    default: '',
+    minlength: [8, '{PATH} (filename) must be greater than 8 characters'],
+    maxlength: [128, '{PATH} (filename) must be less than 128 characters'],
+    default: 'default',
   },
 
   thumbnailExtention: {
