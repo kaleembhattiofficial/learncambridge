@@ -72,7 +72,16 @@ const subjectSchema = new Schema({
     type: String,
     minlength: [8, '{PATH} filename must be greater than 8 characters'],
     maxlength: [128, '{PATH} filename must be less than 128 characters'],
-    required: [true, '{PATH} is required'],
+    default: '',
+  },
+
+  thumbnailExtention: {
+    type: String,
+    enum: {
+      values: ['png', 'jpg', 'jpeg', 'svg'],
+      message: 'Enum validator failed for `{PATH}` with value `{VALUE}',
+    },
+    default: 'png',
   },
 
   author: {
@@ -84,7 +93,7 @@ const subjectSchema = new Schema({
   contributors: {
     type: [Schema.Types.ObjectId],
     ref: 'User',
-    required: [true, '{PATH} is required'],
+    default: [],
   },
 
   rating: {
@@ -109,12 +118,14 @@ const subjectSchema = new Schema({
   },
 });
 
-subjectSchema.pre("save", function () {
+subjectSchema.pre('save', function () {
   this.lastEdit = Date.now();
 
   this.thumbnail = `${this.cambridgeLevel.toLowerCase()}/${this.cambridgeSubject.toLowerCase()}/${this.thumbnail.toLowerCase()}`;
 
-  this.cambridgeCombination = `${this.cambridgeLevel}_${this.cambridgeSubject}`;
+  this.cambridgeCombination = `${this.cambridgeLevel.toUpperCase()}_${this.cambridgeSubject.toUpperCase()}`;
+
+  console.log(`${this.cambridgeLevel.toUpperCase()}_${this.cambridgeSubject.toUpperCase()}`);
 });
 
 const Subject = mongoose.model("Subject", subjectSchema);
