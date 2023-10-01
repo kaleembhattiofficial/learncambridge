@@ -38,6 +38,30 @@ module.exports.getAll = async (req, res, next) => {
   }
 };
 
+module.exports.getAllMy = async (req, res, next) => {
+  try {
+    // Initialization
+    const getAllSelect = '-author -contributors -contentCompletion -topics -__v';
+
+    // DB
+    const allSubjects = await Model.find({ author: req.user })
+      .sort(req.sort)
+      .select(getAllSelect)
+      .limit(req.perPage)
+      .skip(req.perPage * req.getPage);
+
+    // Success
+    res.status(200).json({
+      status: 'success',
+      itemsLength: allSubjects.length,
+      page: req.getPage + 1,
+      data: allSubjects,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.getById = async (req, res, next) => {
   try {
     // Initialization
@@ -129,7 +153,7 @@ module.exports.patchById = async (req, res, next) => {
     // Error handling
     if (!subject) return next(localErrorObj.noId);
 
-    if (subject.author !== req.user) return next(localErrorObj.noPermissions);
+    if (subject.author != req.user) return next(localErrorObj.noPermissions);
 
     // All edit options available
     if (req.body.contentCompletion) updatedSubject.contentCompletion = req.body.contentCompletion;
@@ -191,7 +215,7 @@ module.exports.deleteById = async (req, res, next) => {
     // Error handling
     if (!subject) return next(localErrorObj.noId);
 
-    if (subject.author !== req.user) return next(localErrorObj.noPermissions);
+    if (subject.author != req.user) return next(localErrorObj.noPermissions);
 
     // DB
     await Model.deleteOne({ _id: params.id, author: req.user })
