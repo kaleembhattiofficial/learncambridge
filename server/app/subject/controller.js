@@ -14,6 +14,20 @@ const localErrorObj = require("./../utils/localErrorObj");
 ////////////////////
 
 // GET
+module.exports.getAll = async (req, res, next) => {
+  try {
+    const allSubjects = await Model.find({ status: 'Good' }).select(req.select);
+    res.status(200).json({
+      status: 'success',
+      length: allSubjects.length,
+      data: allSubjects,
+      more: [],
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.getById = async (req, res, next) => {
   try {
     // Initialization

@@ -24,18 +24,7 @@ router.route("/search/:query").get(controller.search);
 
 router.route("/new").post(authenticateToken, controller.postNew);
 
-router
-  .route("/all")
-  .get(async (req, res) => {
-    const allSubjects = await Model.find({ status: 'Good' }).select(req.select);
-    res.status(200).json({
-      status: 'success',
-      length: allSubjects.length,
-      data: allSubjects,
-      more: [],
-    });
-  })
-
+router.route('/all').get(controller.getAll);
 
 router
   .route("/:id")
