@@ -18,7 +18,7 @@ module.exports.getAll = async (req, res, next) => {
   try {
     // Initialization
     const getAllSelect =
-      'createdAt cambridgeCombination cambridgeLevel cambridgeSubject thumbnail thumbnailExtension';
+      '-lastEdit -createdAt -status -difficulty -author -contributors -rating -contentCompletion -topics -__v';
 
     // DB
     const allSubjects = await Model.find({ status: 'Good' })
@@ -42,15 +42,16 @@ module.exports.getById = async (req, res, next) => {
   try {
     // Initialization
     const params = req.params;
+    const getByIdSelect = '-__v';
 
     // DB
     const subject = await Model.findOne({
       _id: params.id,
       status: 'Good',
     })
-      .populate('author', 'username profile')
-      .populate('contributors', 'username profile')
-      .populate('topics');
+      .select(getByIdSelect)
+      .populate('author', 'username profile profileExtension')
+      .populate('contributors', 'username profile profileExtension');
 
     // Error handling
     if (!subject) return next(localErrorObj.noId);
@@ -58,8 +59,9 @@ module.exports.getById = async (req, res, next) => {
     // Success
     res.status(200).json({
       status: 'success',
+      itemsLength: 1,
+      page: 1,
       data: subject,
-      more: [],
     });
     next();
   } catch (error) {
