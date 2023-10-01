@@ -97,6 +97,8 @@ module.exports.postNew = async (req, res, next) => {
         // Success
         res.status(200).json({
           status: 'success',
+          itemsLength: 1,
+          page: 1,
           message: `Created new subject: ${newSubject.cambridgeLevel}_${newSubject.cambridgeSubject}`,
           data: {
             _id: data._id,
@@ -105,7 +107,7 @@ module.exports.postNew = async (req, res, next) => {
       })
       .catch((err) => {
         // Error handling
-        err.statusCode = 401;
+        err.statusCode = 400;
         return next(err);
       });
   } catch (error) {
@@ -122,10 +124,12 @@ module.exports.patchById = async (req, res, next) => {
     const updatedSubject = {};
 
     // DB
-    const subject = await Model.findOne({ _id: params.id, author: req.user });
+    const subject = await Model.findOne({ _id: params.id });
 
     // Error handling
-    if (!subject) return next(localErrorObj.noPermissions);
+    if (!subject) return next(localErrorObj.noId);
+
+    if (subject.author !== req.user) return next(localErrorObj.noPermissions);
 
     // All edit options available
     if (req.body.contentCompletion) updatedSubject.contentCompletion = req.body.contentCompletion;
@@ -158,12 +162,17 @@ module.exports.patchById = async (req, res, next) => {
         // Success
         res.status(200).json({
           status: 'success',
+          itemsLength: 1,
+          page: 1,
           message: `${subject.cambridgeCombination} has successfully been edited with the values that you provided`,
           data: updatedSubject,
         });
       })
-      // Error handling
-      .catch((err) => next(err));
+      .catch((err) => {
+        // Error handling
+        err.statusCode = 400;
+        return next(err);
+      });
   } catch (error) {
     // Error handling
     next(error);
@@ -177,26 +186,29 @@ module.exports.deleteById = async (req, res, next) => {
     const params = req.params;
 
     // DB
-    const subject = await Model.findOne({ _id: params.id, author: req.user });
+    const subject = await Model.findOne({ _id: params.id });
 
     // Error handling
-    if (!subject) return next(localErrorObj.noPermissions);
+    if (!subject) return next(localErrorObj.noId);
+
+    if (subject.author !== req.user) return next(localErrorObj.noPermissions);
 
     // DB
     await Model.deleteOne({ _id: params.id, author: req.user })
       .then(() => {
+        // LATER: Change the status for all subdocuments
         // Success
         res.status(204).json({
           status: 'success',
           message: 'Removed your subject',
-          more: [
-            'This document will no longer exist',
-            'Everything else still exists, like questions, qna, etc.',
-          ],
         });
       })
       // Error handling
-      .catch((err) => next(err));
+      .catch((err) => {
+        // Error handling
+        err.statusCode = 400;
+        return next(err);
+      });
   } catch (error) {
     // Error handling
     next(error);
