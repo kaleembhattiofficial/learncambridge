@@ -45,10 +45,17 @@ app.use((req, res, next) => {
   // Pagination
   req.perPage = 10;
 
-  if (Number(req.query.page) > 0) {
+  if ((typeof req.query.page == 'number', req.query.page > 0)) {
     req.getPage = Number(req.query.page) - 1;
   } else {
     req.getPage = 0;
+  }
+
+  // Sorting
+  if (typeof req.query.sort == 'string') {
+    req.sort = req.query.sort;
+  } else {
+    req.sort = '';
   }
   next();
 });
