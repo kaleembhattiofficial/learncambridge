@@ -97,8 +97,10 @@ module.exports.postNew = async (req, res, next) => {
         // Success
         res.status(200).json({
           status: 'success',
-          message: `Created new subject: ${data.cambridgeLevel}_${data.cambridgeSubject}`,
-          more: data,
+          message: `Created new subject: ${newSubject.cambridgeLevel}_${newSubject.cambridgeSubject}`,
+          data: {
+            _id: data._id,
+          },
         });
       })
       .catch((err) => {
