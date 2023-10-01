@@ -24,9 +24,6 @@ router.route("/search/:query").get(controller.search);
 
 router.route("/new").post(authenticateToken, controller.postNew);
 
-// DEV ONLY
-router.route("/createDev").get(authenticateToken, controller.createDev);
-
 router
   .route("/all")
   .get(async (req, res) => {
