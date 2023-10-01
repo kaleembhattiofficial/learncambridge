@@ -42,8 +42,6 @@ app.use(express.json({ limit: '10kb' }));
 
 // Middleware
 app.use((req, res, next) => {
-  req.select = '-__v';
-
   // Pagination
   req.perPage = 10;
 
