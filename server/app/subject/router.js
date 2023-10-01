@@ -29,19 +29,13 @@ router
   .get(async (req, res) => {
     const allSubjects = await Model.find({ status: 'Good' }).select(req.select);
     res.status(200).json({
-      status: "success",
+      status: 'success',
       length: allSubjects.length,
       data: allSubjects,
       more: [],
     });
   })
-  .delete(async (req, res) => {
-    await Model.deleteMany({});
-    res.status(204).json({
-      status: "success",
-      message: "Removed all documents",
-    });
-  });
+
 
 router
   .route("/:id")
