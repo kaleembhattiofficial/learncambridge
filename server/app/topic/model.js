@@ -20,7 +20,7 @@ const topicSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  lastEditedAt: {
+  lastEdit: {
     type: Date,
     default: Date.now(),
   },
@@ -90,7 +90,7 @@ const topicSchema = new Schema({
 
 topicSchema.pre('save', function () {
   // Last edited
-  this.lastEditedAt = Date.now();
+  this.lastEdit = Date.now();
 
   // Title
   this.title = this.title.toUpperCase();
