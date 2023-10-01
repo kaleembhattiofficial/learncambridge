@@ -16,7 +16,119 @@ const localErrorObj = require('./../utils/localErrorObj');
 ////////////////////
 
 // GET
-module.exports.getById = (req, res, next) => {};
+module.exports.getAll = async (req, res, next) => {
+  try {
+    // Initialization
+    const getAllSelect =
+      '-lastEdit -createdAt -subject -status -author -questions -resources -qna -notes -__v';
+
+    // DB
+    const allTopics = await Model.find({ status: 'Good' })
+      .select(getAllSelect)
+      .limit(req.perPage)
+      .skip(req.perPage * req.getPage);
+
+    // Success
+    res.status(200).json({
+      status: 'success',
+      itemsLength: allTopics.length,
+      page: req.getPage + 1,
+      data: allTopics,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getAllMy = async (req, res, next) => {
+  try {
+    // Initialization
+    const getAllSelect = '-author -__v';
+
+    // DB
+    const allTopics = await Model.find({ author: req.user })
+      .sort(req.sort)
+      .select(getAllSelect)
+      .limit(req.perPage)
+      .skip(req.perPage * req.getPage);
+
+    // Success
+    res.status(200).json({
+      status: 'success',
+      itemsLength: allTopics.length,
+      page: req.getPage + 1,
+      data: allTopics,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getById = async (req, res, next) => {
+  try {
+    // Initialization
+    const params = req.params;
+    const getByIdSelect = '-__v';
+
+    // DB
+    const topic = await Model.findOne({
+      _id: params.id,
+      status: 'Good',
+    }).select(getByIdSelect);
+    // .populate('questions')
+    // .populate('resources')
+    // .populate('qna')
+    // .populate('notes');
+
+    // Error handling
+    if (!topic) return next(localErrorObj.noId);
+
+    // Success
+    res.status(200).json({
+      status: 'success',
+      itemsLength: 1,
+      page: 1,
+      data: topic,
+    });
+    next();
+  } catch (error) {
+    // Error handling
+    next(error);
+  }
+};
+
+module.exports.getMyById = async (req, res, next) => {
+  try {
+    // Initialization
+    const params = req.params;
+    const getByIdSelect = '-__v';
+
+    // DB
+    const topic = await Model.findOne({
+      _id: params.id,
+      author: req.user,
+    }).select(getByIdSelect);
+    // .populate('questions')
+    // .populate('resources')
+    // .populate('qna')
+    // .populate('notes');
+
+    // Error handling
+    if (!topic) return next(localErrorObj.noId);
+
+    // Success
+    res.status(200).json({
+      status: 'success',
+      itemsLength: 1,
+      page: 1,
+      data: topic,
+    });
+    next();
+  } catch (error) {
+    // Error handling
+    next(error);
+  }
+};
 
 module.exports.search = (req, res, next) => {};
 
@@ -26,8 +138,8 @@ module.exports.postNew = async (req, res, next) => {
     // Initialization
     const topic = {
       title: req.body.title,
-      subject: req.body.subject,
       topicNumber: req.body.topicNumber,
+      subject: req.body.subject,
       author: req.user,
     };
 
@@ -66,7 +178,7 @@ module.exports.postNew = async (req, res, next) => {
               res.status(200).json({
                 status: 'success',
                 message: `Created new topic: ${data.title} | IN | ${subject.cambridgeCombination}`,
-                more: data,
+                data: { _id: data._id },
               });
             })
             .catch((err) => next(err));
@@ -106,7 +218,7 @@ module.exports.patchById = async (req, res, next) => {
       // Loop1
       for (const key of Object.keys(updatedTopic)) {
         // Converting into upper case for ease
-        if (topic[`${key}`].toUpperCase() === updatedTopic[key].toUpperCase()) {
+        if (String(topic[key]).toUpperCase() === String(updatedTopic[key]).toUpperCase()) {
           // Removing the keys with the same values
           delete updatedTopic[key];
         }
@@ -120,11 +232,11 @@ module.exports.patchById = async (req, res, next) => {
     await Model.updateOne({ _id: params.id, author: req.user }, updatedTopic, {
       runValidators: true,
     })
-      .then(() => {
+      .then((data) => {
         // Success
         res.status(200).json({
           status: 'success',
-          message: `${topic.cambridgeCombination} has successfully been edited with the values that you provided`,
+          message: `${topic.title} has successfully been edited with the values that you provided`,
           data: updatedTopic,
         });
       })
@@ -136,7 +248,37 @@ module.exports.patchById = async (req, res, next) => {
 };
 
 // DELETE
-module.exports.deleteById = (req, res, next) => {};
+module.exports.deleteById = async (req, res, next) => {
+  try {
+    // Initialization
+    const params = req.params;
 
-// DEV ONLY
-module.exports.createDev = (req, res, next) => {};
+    // DB
+    const topic = await Model.findOne({ _id: params.id });
+
+    // Error handling
+    if (!topic) return next(localErrorObj.noId);
+
+    if (topic.author != req.user) return next(localErrorObj.noPermissions);
+
+    // DB
+    await Model.deleteOne({ _id: params.id, author: req.user })
+      .then(() => {
+        // LATER: Change the status for all subdocuments
+        // Success
+        res.status(204).json({
+          status: 'success',
+          message: 'Removed your topic',
+        });
+      })
+      // Error handling
+      .catch((err) => {
+        // Error handling
+        err.statusCode = 400;
+        return next(err);
+      });
+  } catch (error) {
+    // Error handling
+    next(error);
+  }
+};

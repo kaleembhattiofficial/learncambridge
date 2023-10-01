@@ -20,23 +20,18 @@ const router = express.Router();
 
 // Routes
 
-
-
+// Public
 router.route('/search/:query').get(controller.search);
+router.route('/all').get(controller.getAll);
+router.route('/:id').get(controller.getById);
 
+// User specific
 router.route('/new').post(authenticateToken, controller.postNew);
-
-// DEV ONLY
-router.route('/createDev').get(controller.createDev);
-
-router.route('/all').get(async (req, res) => {
-  const allTopics = await Model.find({});
-  res.status(200).json({ allTopics });
-});
+router.route('/my/all').get(authenticateToken, controller.getAllMy);
 
 router
-  .route('/:id')
-  .get(controller.getById)
+  .route('/my/:id')
+  .get(authenticateToken, controller.getMyById)
   .patch(authenticateToken, controller.patchById)
   .delete(authenticateToken, controller.deleteById);
 
