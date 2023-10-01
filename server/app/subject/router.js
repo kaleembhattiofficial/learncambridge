@@ -30,6 +30,7 @@ router.route('/new').post(authenticateToken, controller.postNew);
 router.route('/my/all').get(authenticateToken, controller.getAllMy);
 router
   .route('/my/:id')
+  .get(authenticateToken, controller.getMyById)
   .patch(authenticateToken, controller.patchById)
   .delete(authenticateToken, controller.deleteById);
 

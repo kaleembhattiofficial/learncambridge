@@ -94,6 +94,38 @@ module.exports.getById = async (req, res, next) => {
   }
 };
 
+module.exports.getMyById = async (req, res, next) => {
+  try {
+    // Initialization
+    const params = req.params;
+    const getByIdSelect = '-__v';
+
+    // DB
+    const subject = await Model.findOne({
+      _id: params.id,
+      author: req.user,
+    })
+      .select(getByIdSelect)
+      .populate('author', 'username profile profileExtension')
+      .populate('contributors', 'username profile profileExtension');
+
+    // Error handling
+    if (!subject) return next(localErrorObj.noId);
+
+    // Success
+    res.status(200).json({
+      status: 'success',
+      itemsLength: 1,
+      page: 1,
+      data: subject,
+    });
+    next();
+  } catch (error) {
+    // Error handling
+    next(error);
+  }
+};
+
 module.exports.search = (req, res, next) => {};
 
 // POST
