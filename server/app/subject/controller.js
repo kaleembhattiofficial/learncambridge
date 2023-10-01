@@ -16,12 +16,22 @@ const localErrorObj = require("./../utils/localErrorObj");
 // GET
 module.exports.getAll = async (req, res, next) => {
   try {
-    const allSubjects = await Model.find({ status: 'Good' }).select(req.select);
+    // Initialization
+    const getAllSelect =
+      'createdAt cambridgeCombination cambridgeLevel cambridgeSubject thumbnail thumbnailExtension';
+
+    // DB
+    const allSubjects = await Model.find({ status: 'Good' })
+      .select(getAllSelect)
+      .limit(req.perPage)
+      .skip(req.perPage * req.getPage);
+
+    // Success
     res.status(200).json({
       status: 'success',
-      length: allSubjects.length,
+      itemsLength: allSubjects.length,
+      page: req.getPage + 1,
       data: allSubjects,
-      more: [],
     });
   } catch (error) {
     next(error);
